@@ -1,4 +1,3 @@
--- Run this in your Supabase SQL Editor to set up the tasks table
 
 create table tasks (
   id uuid default gen_random_uuid() primary key,
