@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Alert, ScrollView, StyleSheet, Image } from 'react-native';
-import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
+import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, Alert, ScrollView, StyleSheet } from 'react-native';
+import { Image } from 'expo-image';
+import { useFonts, Quicksand_400Regular, Quicksand_600SemiBold, Quicksand_700Bold } from '@expo-google-fonts/quicksand';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
+import GlassBackground from '../components/GlassBackground';
+import GlassCard from '../components/GlassCard';
+import GlassInput from '../components/GlassInput';
+import GlassButton from '../components/GlassButton';
 
 export default function AddTaskScreen({ navigation }) {
   const [name, setName] = useState('');
@@ -14,9 +17,9 @@ export default function AddTaskScreen({ navigation }) {
   const { user } = useAuth();
   
   let [fontsLoaded] = useFonts({
-    Inter_400Regular,
-    Inter_600SemiBold,
-    Inter_700Bold,
+    Quicksand_400Regular,
+    Quicksand_600SemiBold,
+    Quicksand_700Bold,
   });
 
   if (!fontsLoaded) {
@@ -60,109 +63,93 @@ export default function AddTaskScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <ScrollView style={styles.scrollView} keyboardShouldPersistTaps="handled">
-        <Animated.View 
-          entering={FadeInDown.duration(500)}
-          style={styles.header}
+    <GlassBackground>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <ScrollView 
+          style={styles.scrollView} 
+          keyboardShouldPersistTaps="handled"
         >
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Text style={styles.backText}>← Back</Text>
-          </TouchableOpacity>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+              <Text style={styles.backText}>← Back</Text>
+            </TouchableOpacity>
 
-          <View style={styles.logoRow}>
-            <Image 
-              source={require('../../assets/cat.webp')} 
-              style={styles.catImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.appName}>New Task</Text>
-          </View>
-          <Text style={styles.title}>Add a Task</Text>
-          <Text style={styles.subtitle}>
-            Break it down, make it manageable
-          </Text>
-        </Animated.View>
-
-        <Animated.View 
-          entering={FadeInUp.delay(200).duration(600)}
-          style={styles.form}
-        >
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Task Name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="What needs to be done?"
-              placeholderTextColor="#9CA3AF"
-              value={name}
-              onChangeText={setName}
-              maxLength={100}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Duration (minutes)</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="30"
-              placeholderTextColor="#9CA3AF"
-              value={duration}
-              onChangeText={setDuration}
-              keyboardType="number-pad"
-              maxLength={4}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Description (optional)</Text>
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              placeholder="Any additional details..."
-              placeholderTextColor="#9CA3AF"
-              value={description}
-              onChangeText={setDescription}
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-              maxLength={500}
-            />
-          </View>
-
-          <TouchableOpacity
-            onPress={handleSubmit}
-            disabled={loading}
-            style={styles.submitButton}
-            activeOpacity={0.8}
-          >
-            <LinearGradient
-              colors={["#10B981", "#34D399"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.submitGradient}
-            >
-              <Text style={styles.submitText}>
-                {loading ? 'Creating...' : 'Create Task'}
+            <View style={styles.headerContent}>
+              <View style={styles.logoRow}>
+                <Image 
+                  source={require('../../assets/cat.png')} 
+                  style={styles.catImage}
+                  contentFit="contain"
+                />
+                <Text style={styles.appName}>New Task</Text>
+              </View>
+              <Text style={styles.title}>ADD A TASK</Text>
+              <Text style={styles.subtitle}>
+                Break it down, make it manageable
               </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </Animated.View>
+            </View>
+          </View>
 
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <View style={styles.formContainer}>
+            <GlassCard>
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Task Name</Text>
+                <GlassInput
+                  placeholder="What needs to be done?"
+                  value={name}
+                  onChangeText={setName}
+                  maxLength={100}
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Duration (minutes)</Text>
+                <GlassInput
+                  placeholder="30"
+                  value={duration}
+                  onChangeText={setDuration}
+                  keyboardType="number-pad"
+                  maxLength={4}
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Description (optional)</Text>
+                <GlassInput
+                  placeholder="Any additional details..."
+                  value={description}
+                  onChangeText={setDescription}
+                  multiline
+                  numberOfLines={4}
+                  style={styles.textArea}
+                  maxLength={500}
+                />
+              </View>
+
+              <GlassButton
+                onPress={handleSubmit}
+                disabled={loading}
+                variant="primary"
+                style={styles.submitButton}
+              >
+                {loading ? 'CREATING...' : 'CREATE TASK'}
+              </GlassButton>
+            </GlassCard>
+          </View>
+
+          <View style={styles.bottomSpacer} />
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </GlassBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   scrollView: {
     flex: 1,
@@ -170,21 +157,24 @@ const styles = StyleSheet.create({
   header: {
     paddingTop: 64,
     paddingHorizontal: 24,
-    paddingBottom: 24,
+    paddingBottom: 28,
   },
   backButton: {
-    marginBottom: 16,
+    marginBottom: 24,
     alignSelf: 'flex-start',
   },
   backText: {
-    color: '#6B7280',
-    fontSize: 16,
-    fontFamily: 'Inter_400Regular',
+    color: '#10B981',
+    fontSize: 17,
+    fontFamily: 'Quicksand_700Bold',
+  },
+  headerContent: {
+    alignItems: 'center',
   },
   logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   catImage: {
     width: 36,
@@ -192,75 +182,43 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   appName: {
-    color: '#059669',
-    fontSize: 18,
-    fontFamily: 'Inter_600SemiBold',
-    letterSpacing: -0.5,
+    color: '#10B981',
+    fontSize: 20,
+    fontFamily: 'Quicksand_700Bold',
   },
   title: {
-    color: '#111827',
+    color: '#44403C',
     fontSize: 30,
-    fontFamily: 'Inter_700Bold',
-    marginBottom: 8,
-    marginTop: 8,
-    letterSpacing: -1,
+    fontFamily: 'Quicksand_700Bold',
+    marginBottom: 10,
+    textAlign: 'center',
   },
   subtitle: {
-    color: '#6B7280',
+    color: '#78716C',
     fontSize: 16,
-    fontFamily: 'Inter_400Regular',
-    marginBottom: 32,
+    fontFamily: 'Quicksand_600SemiBold',
+    textAlign: 'center',
   },
-  form: {
+  formContainer: {
     paddingHorizontal: 24,
   },
   inputGroup: {
-    marginBottom: 24,
+    marginBottom: 18,
   },
   label: {
-    color: '#374151',
-    fontSize: 14,
-    fontFamily: 'Inter_600SemiBold',
+    color: '#44403C',
+    fontSize: 15,
+    fontFamily: 'Quicksand_700Bold',
     marginBottom: 8,
-    marginLeft: 4,
-  },
-  input: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E5E7EB',
-    borderWidth: 2,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    fontSize: 16,
-    fontFamily: 'Inter_400Regular',
-    color: '#111827',
   },
   textArea: {
     minHeight: 100,
-    paddingTop: 16,
+    paddingTop: 14,
   },
   submitButton: {
-    height: 56,
-    borderRadius: 999,
-    overflow: 'hidden',
-    marginTop: 16,
-    shadowColor: '#10B981',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  submitGradient: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  submitText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontFamily: 'Inter_700Bold',
+    marginTop: 12,
   },
   bottomSpacer: {
-    height: 128,
+    height: 100,
   },
 });

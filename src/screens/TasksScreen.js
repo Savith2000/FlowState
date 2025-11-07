@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, RefreshControl, StyleSheet, Image } from 'react-native';
-import Animated, { FadeInUp, FadeInDown, Layout } from 'react-native-reanimated';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useFonts, Inter_400Regular, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl, StyleSheet } from 'react-native';
+import { Image } from 'expo-image';
+import { useFonts, Quicksand_400Regular, Quicksand_600SemiBold, Quicksand_700Bold } from '@expo-google-fonts/quicksand';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
+import GlassBackground from '../components/GlassBackground';
+import GlassCard from '../components/GlassCard';
+import GlassButton from '../components/GlassButton';
 
 export default function TasksScreen({ navigation }) {
   const [tasks, setTasks] = useState([]);
@@ -12,9 +14,9 @@ export default function TasksScreen({ navigation }) {
   const { signOut, user } = useAuth();
   
   let [fontsLoaded] = useFonts({
-    Inter_400Regular,
-    Inter_600SemiBold,
-    Inter_700Bold,
+    Quicksand_400Regular,
+    Quicksand_600SemiBold,
+    Quicksand_700Bold,
   });
 
   const fetchTasks = async () => {
@@ -57,255 +59,203 @@ export default function TasksScreen({ navigation }) {
 
   if (!user || !fontsLoaded) {
     return (
-      <View style={styles.container}>
+      <GlassBackground>
         <Text style={styles.loadingText}>Loading...</Text>
-      </View>
+      </GlassBackground>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Animated.View 
-        entering={FadeInDown.duration(500)}
-        style={styles.header}
-      >
-        <View>
-          <View style={styles.logoRow}>
-            <Image 
-              source={require('../../assets/cat.webp')} 
-              style={styles.catImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.appName}>FlowState</Text>
-          </View>
-          <Text style={styles.title}>Your Tasks</Text>
-          <Text style={styles.subtitle}>{tasks.length} tasks</Text>
-        </View>
-        <TouchableOpacity
-          onPress={handleLogout}
-          style={styles.logoutButton}
-        >
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
-      </Animated.View>
-
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={fetchTasks} tintColor="#10B981" />
-        }
-      >
-        {tasks.length === 0 ? (
-          <Animated.View 
-            entering={FadeInUp.delay(300).duration(600)}
-            style={styles.emptyState}
-          >
-            <View style={styles.emptyIcon}>
-              <Text style={styles.emptyEmoji}>✨</Text>
+    <GlassBackground>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View>
+            <View style={styles.logoRow}>
+              <Image 
+                source={require('../../assets/cat.png')} 
+                style={styles.catImage}
+                contentFit="contain"
+              />
+              <Text style={styles.appName}>FlowState</Text>
             </View>
-            <Text style={styles.emptyTitle}>No tasks yet</Text>
-            <Text style={styles.emptySubtitle}>
-              Start by adding your first task
-            </Text>
-          </Animated.View>
-        ) : (
-          <View style={styles.tasksList}>
-            {tasks.map((task, index) => (
-              <Animated.View
-                key={task.id}
-                entering={FadeInUp.delay(index * 80).duration(500)}
-                layout={Layout.springify()}
-                style={styles.taskCard}
-              >
-                <View style={styles.taskHeader}>
-                  <Text style={styles.taskName} numberOfLines={2}>
-                    {task.name}
-                  </Text>
-                  <View style={styles.durationBadge}>
-                    <Text style={styles.durationText}>
-                      {task.duration} min
-                    </Text>
-                  </View>
-                </View>
-                {task.description ? (
-                  <Text style={styles.taskDescription}>
-                    {task.description}
-                  </Text>
-                ) : null}
-              </Animated.View>
-            ))}
-            <View style={styles.bottomSpacer} />
+            <Text style={styles.title}>Your Tasks</Text>
+            <Text style={styles.subtitle}>{tasks.length} tasks</Text>
           </View>
-        )}
-      </ScrollView>
+          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
 
-      <Animated.View 
-        entering={FadeInUp.delay(400).duration(500)}
-        style={styles.addButtonContainer}
-      >
-        <TouchableOpacity
-          onPress={() => navigation.navigate('AddTask')}
-          style={styles.addButton}
-          activeOpacity={0.8}
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          refreshControl={
+            <RefreshControl refreshing={loading} onRefresh={fetchTasks} tintColor="#10B981" />
+          }
         >
-          <LinearGradient
-            colors={["#10B981", "#34D399"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.addButtonGradient}
+          {tasks.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyEmoji}>✨</Text>
+              <Text style={styles.emptyTitle}>No tasks yet</Text>
+              <Text style={styles.emptySubtitle}>
+                Start by adding your first task
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.tasksList}>
+              {tasks.map((task) => (
+                <GlassCard key={task.id} style={styles.taskCard}>
+                  <View style={styles.taskHeader}>
+                    <Text style={styles.taskName} numberOfLines={2}>
+                      {task.name}
+                    </Text>
+                    <View style={styles.durationBadge}>
+                      <Text style={styles.durationText}>
+                        {task.duration} min
+                      </Text>
+                    </View>
+                  </View>
+                  {task.description ? (
+                    <Text style={styles.taskDescription}>
+                      {task.description}
+                    </Text>
+                  ) : null}
+                </GlassCard>
+              ))}
+            </View>
+          )}
+        </ScrollView>
+
+        <View style={styles.addButtonContainer}>
+          <GlassButton
+            onPress={() => navigation.navigate('AddTask')}
+            variant="primary"
           >
-            <Text style={styles.addButtonText}>Add Task</Text>
-            <Text style={styles.addButtonIcon}>+</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </Animated.View>
-    </View>
+            ADD TASK +
+          </GlassButton>
+        </View>
+      </View>
+    </GlassBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
   },
   header: {
     paddingTop: 64,
     paddingHorizontal: 24,
-    paddingBottom: 16,
+    paddingBottom: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    backgroundColor: '#FFFEF9',
+    borderBottomWidth: 3,
+    borderBottomColor: '#44403C',
   },
   logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   catImage: {
     width: 32,
     height: 32,
-    marginRight: 8,
+    marginRight: 10,
   },
   appName: {
-    color: '#059669',
-    fontSize: 16,
-    fontFamily: 'Inter_600SemiBold',
-    letterSpacing: -0.5,
+    color: '#10B981',
+    fontSize: 18,
+    fontFamily: 'Quicksand_700Bold',
   },
   title: {
-    color: '#111827',
+    color: '#44403C',
     fontSize: 30,
-    fontFamily: 'Inter_700Bold',
-    marginTop: 4,
-    letterSpacing: -1,
+    fontFamily: 'Quicksand_700Bold',
   },
   subtitle: {
-    color: '#6B7280',
-    fontSize: 14,
-    fontFamily: 'Inter_400Regular',
+    color: '#78716C',
+    fontSize: 15,
+    fontFamily: 'Quicksand_600SemiBold',
     marginTop: 4,
   },
   logoutButton: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E5E7EB',
-    borderWidth: 2,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    backgroundColor: '#FFFEF9',
+    borderWidth: 3,
+    borderColor: '#44403C',
+    borderRadius: 16,
   },
   logoutText: {
-    color: '#374151',
+    color: '#10B981',
     fontSize: 14,
-    fontFamily: 'Inter_600SemiBold',
+    fontFamily: 'Quicksand_700Bold',
   },
   scrollView: {
     flex: 1,
-    paddingHorizontal: 24,
   },
   scrollContent: {
-    flexGrow: 1,
+    padding: 24,
+    paddingBottom: 120,
   },
   emptyState: {
     marginTop: 80,
     alignItems: 'center',
   },
-  emptyIcon: {
-    width: 80,
-    height: 80,
-    backgroundColor: '#ECFDF5',
-    borderRadius: 999,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
   emptyEmoji: {
-    fontSize: 40,
+    fontSize: 56,
+    marginBottom: 20,
   },
   emptyTitle: {
-    color: '#374151',
-    fontSize: 18,
-    fontFamily: 'Inter_600SemiBold',
-    textAlign: 'center',
+    color: '#44403C',
+    fontSize: 20,
+    fontFamily: 'Quicksand_700Bold',
   },
   emptySubtitle: {
-    color: '#9CA3AF',
-    fontSize: 14,
-    fontFamily: 'Inter_400Regular',
-    textAlign: 'center',
-    marginTop: 8,
+    color: '#78716C',
+    fontSize: 15,
+    fontFamily: 'Quicksand_600SemiBold',
+    marginTop: 10,
   },
   tasksList: {
-    paddingTop: 16,
+    gap: 16,
   },
   taskCard: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E5E7EB',
-    borderWidth: 1.5,
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+    marginBottom: 16,
   },
   taskHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   taskName: {
-    color: '#111827',
+    color: '#44403C',
     fontSize: 18,
-    fontFamily: 'Inter_600SemiBold',
+    fontFamily: 'Quicksand_700Bold',
     flex: 1,
     marginRight: 12,
   },
   durationBadge: {
-    backgroundColor: '#F0FDF4',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    backgroundColor: '#D1FAE5',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderWidth: 2,
+    borderColor: '#44403C',
   },
   durationText: {
-    color: '#059669',
-    fontSize: 12,
-    fontFamily: 'Inter_600SemiBold',
+    color: '#047857',
+    fontSize: 13,
+    fontFamily: 'Quicksand_700Bold',
   },
   taskDescription: {
-    color: '#6B7280',
-    fontSize: 14,
-    fontFamily: 'Inter_400Regular',
-    lineHeight: 20,
-  },
-  bottomSpacer: {
-    height: 96,
+    color: '#78716C',
+    fontSize: 15,
+    fontFamily: 'Quicksand_400Regular',
+    lineHeight: 22,
   },
   addButtonContainer: {
     position: 'absolute',
@@ -313,36 +263,10 @@ const styles = StyleSheet.create({
     left: 24,
     right: 24,
   },
-  addButton: {
-    height: 56,
-    borderRadius: 999,
-    overflow: 'hidden',
-    shadowColor: '#10B981',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  addButtonGradient: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  addButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontFamily: 'Inter_700Bold',
-    marginRight: 8,
-  },
-  addButtonIcon: {
-    color: '#FFFFFF',
-    fontSize: 20,
-  },
   loadingText: {
-    color: '#6B7280',
-    fontSize: 16,
-    fontFamily: 'Inter_400Regular',
+    color: '#78716C',
+    fontSize: 17,
+    fontFamily: 'Quicksand_600SemiBold',
     textAlign: 'center',
     marginTop: 100,
   },
