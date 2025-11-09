@@ -5,6 +5,7 @@ create table tasks (
   name text not null,
   duration integer not null,
   description text,
+  icon_name text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 

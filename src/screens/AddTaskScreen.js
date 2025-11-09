@@ -44,22 +44,54 @@ export default function AddTaskScreen({ navigation }) {
     }
 
     setLoading(true);
-    const { error } = await supabase.from('tasks').insert([
-      {
-        user_id: user.id,
-        name: name.trim(),
-        duration: durationNum,
-        description: description.trim() || null,
-      },
-    ]);
-
-    setLoading(false);
+    
+    const { data, error } = await supabase
+      .from('tasks')
+      .insert([
+        {
+          user_id: user.id,
+          name: name.trim(),
+          duration: durationNum,
+          description: description.trim() || null,
+        },
+      ])
+      .select()
+      .single();
 
     if (error) {
+      setLoading(false);
       Alert.alert('Error', error.message);
-    } else {
-      navigation.goBack();
+      return;
     }
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      
+      if (token && data?.id) {
+        const supabaseUrl = supabase.supabaseUrl;
+        
+        fetch(`${supabaseUrl}/functions/v1/suggest-task-icon`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            taskId: data.id,
+            taskName: name.trim(),
+            taskDescription: description.trim() || '',
+          }),
+        }).catch(err => {
+          console.log('Icon suggestion failed:', err);
+        });
+      }
+    } catch (iconError) {
+      console.log('Icon suggestion error:', iconError);
+    }
+
+    setLoading(false);
+    navigation.goBack();
   };
 
   return (

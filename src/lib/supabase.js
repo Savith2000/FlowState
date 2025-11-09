@@ -3,12 +3,6 @@ import { createClient } from '@supabase/supabase-js';
 
 const config = Constants.expoConfig?.extra ?? {};
 
-if (!config.supabaseUrl || !config.supabaseAnonKey) {
-  console.warn(
-    'Missing Supabase configuration. Please set EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY in your .env and restart the dev server.'
-  );
-}
-
 export const supabase = createClient(
   config.supabaseUrl || '',
   config.supabaseAnonKey || ''
