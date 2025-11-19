@@ -59,6 +59,18 @@ SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 4. Run the application
+
+**Option A: Using Expo Go**
+```bash
+# Start the Expo development server
+expo start
+# or
+npx expo start
+
+# Scan the QR code with the Expo Go app on your phone
+```
+
+**Option B: Using React Native CLI**
 ```bash
 # For iOS
 npm run ios
