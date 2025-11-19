@@ -2,28 +2,27 @@
   "expo": {
     "name": "TestEdgeProject",
     "slug": "TestEdgeProject",
+    "scheme": "testedgeproject",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+    "extra": {
+      "expoClientId": "510635659386-pclae08ku8sn3falcib1htdbk2q5hqsl.apps.googleusercontent.com",
+      "iosClientId": "510635659386-2hd7dlaiio0ia08thcj6oj963877st0n.apps.googleusercontent.com",
+      "webClientId": "510635659386-pclae08ku8sn3falcib1htdbk2q5hqsl.apps.googleusercontent.com",
+      "supabaseUrl": "https://rtxqdcbfjxumrxfozntp.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0eHFkY2Jmanh1bXJ4Zm96bnRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NjM4NjIsImV4cCI6MjA3NzMzOTg2Mn0.SipdQHK3hNiM9tBztL9sCu5aoUJBwAPDBcDKst2P_wM",
+      "eas": {
+        "projectId": "81f814b1-2ed5-4177-b43b-8912ca4fb3ce"
+      }
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.TestEdgeProject"
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
+    "android": {},
+    "web": {}
   }
 }

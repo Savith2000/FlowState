@@ -253,7 +253,14 @@ export default function TasksScreen({ navigation }) {
             ) : null}
           </GlassCard>
         </SwipeableTask>
+        <Button
+          title="Open Calendar"
+          onPress={() => navigation.navigate("Calendar")}
+        />
+
       </Animated.View>
+
+      
     );
   };
 
@@ -357,6 +364,15 @@ export default function TasksScreen({ navigation }) {
         </View>
 
         {renderContent()}
+
+        <View style={{ paddingHorizontal: 24, marginTop: 10 }}>
+          <GlassButton 
+           onPress={() => navigation.navigate("Calendar")}
+            variant="secondary"
+            >
+          OPEN CALENDAR
+          </GlassButton>
+        </View>
 
         <View style={styles.addButtonContainer}>
           <GlassButton

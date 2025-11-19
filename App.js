@@ -7,6 +7,7 @@ import { useAuth } from './src/hooks/useAuth';
 import AuthScreen from './src/screens/AuthScreen';
 import TasksScreen from './src/screens/TasksScreen';
 import AddTaskScreen from './src/screens/AddTaskScreen';
+import CalendarScreen from "./src/screens/CalendarScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -39,7 +40,9 @@ export default function App() {
               animation: 'slide_from_bottom',
             }}
           />
+          <Stack.Screen name="Calendar" component={CalendarScreen} />
         </Stack.Navigator>
+        
       ) : (
         <AuthScreen />
       )}
