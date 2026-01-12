@@ -1,4 +1,5 @@
 # FlowState
+![FlowState – AI-powered scheduling app preview](assets/Flowstate.png)
 
 A research-backed mobile calendar application that uses AI-driven scheduling to optimize productivity while preventing burnout.
 
